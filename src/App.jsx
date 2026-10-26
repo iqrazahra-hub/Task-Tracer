@@ -13,7 +13,6 @@ export default function App() {
   const [saved, setSaved] = useState(false);
   const [undo, setUndo] = useState(null); // { task, index } of the last deleted task
 
-  // Derived values
   const total = tasks.length;
   const doneCount = tasks.filter((t) => t.done).length;
   const pending = total - doneCount;
@@ -27,24 +26,20 @@ export default function App() {
     return matchesFilter && t.title.toLowerCase().includes(q);
   });
 
-  // Effect: apply the theme to the <html> element
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
-  // Effect: tab title shows the pending count
   useEffect(() => {
     document.title = pending ? `(${pending}) Task Tracker` : "Task Tracker";
   }, [pending]);
 
-  // Effect: flash "Saved" after tasks change (cleanup clears the old timer)
   useEffect(() => {
     setSaved(true);
     const timerId = setTimeout(() => setSaved(false), 1200);
     return () => clearTimeout(timerId);
   }, [tasks]);
 
-  // Effect: hide the undo toast after 5 seconds (cleanup again)
   useEffect(() => {
     if (!undo) return;
     const timerId = setTimeout(() => setUndo(null), 5000);
